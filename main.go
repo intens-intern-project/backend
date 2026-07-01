@@ -29,16 +29,17 @@ func main() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost"},
-		AllowMethods:     []string{"GET", "USER", "PUT", "DELETE", "OPTIONS"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost", "http://frontend", "http://frontend:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
 
-	router.GET("/counter", getCounter)
-	router.PUT("/counter/plus", incrementCounter)
-	router.PUT("/counter/reset", resetCounter)
+	g := router.Group("/api")
+	g.GET("/counter", getCounter)
+	g.PUT("/counter/plus", incrementCounter)
+	g.PUT("/counter/reset", resetCounter)
 
 	router.Run(":8080")
 }

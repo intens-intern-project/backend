@@ -1,6 +1,7 @@
 # Stage 1
 
 FROM golang:1.25-alpine AS build
+
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -17,6 +18,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # Stage 2
 
 FROM alpine:edge
+LABEL org.opencontainers.image.source=https://github.com/intens-intern-project/backend
 WORKDIR /app
 
 COPY --from=build /app/intens-intern-backend .
