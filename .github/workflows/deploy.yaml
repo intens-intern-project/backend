@@ -46,6 +46,11 @@ jobs:
     needs: build
     runs-on: iip-org-runner
     steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v5.1.0
+        with:
+          version: v1.36.1
+
       - name: Redeploy on Kubernetes
         run: kubectl rollout restart deployment/${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_NAMESPACE }}
 
