@@ -1,4 +1,4 @@
-name: Build and Push Docker images
+name: Build and Push Docker image and Redeploy 
 
 on:
   push:
@@ -6,6 +6,9 @@ on:
       - main
 
 env:
+  K8S_DEPLOYMENT_NAME: backend
+  K8S_NAMESPACE: iip
+  
   DOCKER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
@@ -39,3 +42,12 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  redeploy:
+    needs: build
+    runs-on: iip-org-runner
+    steps:
+      - name: Redeploy on Kubernetes
+        run: kubectl rollout restart deployment/${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_NAMESPACE }}
+
+      - name: Wait for redeployment to finish
+        run: kubectl rollout status deployment/${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_NAMESPACE }} --timeout=1m
