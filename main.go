@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,6 +17,11 @@ type Counter struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Value int    `json:"value"`
+}
+
+type Config struct {
+	Version string
+	Env     string
 }
 
 func main() {
@@ -37,6 +44,7 @@ func main() {
 	}))
 
 	g := router.Group("/api")
+	g.GET("/version", getVersion)
 	g.GET("/counter", getCounter)
 	g.PUT("/counter/plus", incrementCounter)
 	g.PUT("/counter/reset", resetCounter)
@@ -74,4 +82,24 @@ func resetCounter(c *gin.Context) {
 	}
 
 	getCounter(c)
+}
+
+func getVersion(c *gin.Context) {
+	cfg := LoadConfig()
+
+	c.JSON(http.StatusOK, fmt.Sprintf("Version=%s, Env=%s", cfg.Version, cfg.Env))
+}
+
+func LoadConfig() Config {
+	return Config{
+		Version: getEnv("APP_VERSION", "0.0.1"),
+		Env:     getEnv("APP_ENV", "dev"),
+	}
+}
+
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }
