@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
+      - dev
 
 env:
   K8S_DEPLOYMENT_NAME: backend
-  K8S_NAMESPACE: iip
   
   DOCKER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -23,6 +23,21 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
+
+      - name: Determine K8s Namespace
+        run: |
+          case "$GITHUB_REF_NAME" in
+            main)
+              echo "K8S_NAMESPACE=prod" >> "$GITHUB_ENV"
+              ;;
+            dev)
+              echo "K8S_NAMESPACE=dev" >> "$GITHUB_ENV"
+              ;;
+            *)
+              echo "Unsupported branch: $GITHUB_REF_NAME"
+              exit 0
+              ;;
+          esac
 
       - name: Log in to GHCR
         uses: docker/login-action@v4
