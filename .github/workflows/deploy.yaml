@@ -28,10 +28,10 @@ jobs:
         run: |
           case "$GITHUB_REF_NAME" in
             main)
-              echo "K8S_NAMESPACE=prod" >> "$GITHUB_ENV"
+              echo "K8S_NAMESPACE=iip-prod" >> "$GITHUB_ENV"
               ;;
             dev)
-              echo "K8S_NAMESPACE=dev" >> "$GITHUB_ENV"
+              echo "K8S_NAMESPACE=iip-dev" >> "$GITHUB_ENV"
               ;;
             *)
               echo "Unsupported branch: $GITHUB_REF_NAME"
