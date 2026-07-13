@@ -24,21 +24,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v7
 
-      - name: Determine K8s Namespace
-        run: |
-          case "$GITHUB_REF_NAME" in
-            main)
-              echo "K8S_NAMESPACE=iip-prod" >> "$GITHUB_ENV"
-              ;;
-            dev)
-              echo "K8S_NAMESPACE=iip-dev" >> "$GITHUB_ENV"
-              ;;
-            *)
-              echo "Unsupported branch: $GITHUB_REF_NAME"
-              exit 0
-              ;;
-          esac
-
       - name: Log in to GHCR
         uses: docker/login-action@v4
         with:
@@ -61,6 +46,21 @@ jobs:
     needs: build
     runs-on: iip-org-runner
     steps:
+      - name: Determine K8s Namespace
+        run: |
+          case "$GITHUB_REF_NAME" in
+            main)
+              echo "K8S_NAMESPACE=iip-prod" >> "$GITHUB_ENV"
+              ;;
+            dev)
+              echo "K8S_NAMESPACE=iip-dev" >> "$GITHUB_ENV"
+              ;;
+            *)
+              echo "Unsupported branch: $GITHUB_REF_NAME"
+              exit 0
+              ;;
+          esac
+
       - name: Install kubectl
         uses: azure/setup-kubectl@v5.1.0
         with:
