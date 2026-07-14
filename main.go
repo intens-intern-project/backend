@@ -87,7 +87,7 @@ func resetCounter(c *gin.Context) {
 func getVersion(c *gin.Context) {
 	cfg := LoadConfig()
 
-	c.JSON(http.StatusOK, fmt.Sprintf("Version=%s, Env=%s", cfg.Version, cfg.Env))
+	c.JSON(http.StatusOK, fmt.Sprintf("Version=%s, Env=%s aaaaaaa", cfg.Version, cfg.Env))
 }
 
 func LoadConfig() Config {
