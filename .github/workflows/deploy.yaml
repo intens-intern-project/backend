@@ -13,7 +13,26 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.increment-version.outputs.new-version }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      
+      - name: Increment version
+        id: increment-version
+        uses: RichardInnocent/semantic-versioning-git@v0.0.1
+        with:
+          version-prefix: ""
+
   build:
+    needs: version
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -38,10 +57,11 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest , ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}":${{ needs.version.outputs.version }}"
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  
   redeploy:
     needs: build
     runs-on: iip-org-runner
