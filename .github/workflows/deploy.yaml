@@ -15,7 +15,9 @@ env:
 jobs:
   version:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+    
     outputs:
       version: ${{ steps.increment-version.outputs.new-version }}
 
