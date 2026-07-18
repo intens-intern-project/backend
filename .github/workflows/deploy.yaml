@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest , ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}":${{ needs.version.outputs.version }}"
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest , ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.version.outputs.version }}
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
